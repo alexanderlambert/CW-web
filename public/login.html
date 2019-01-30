@@ -8,35 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Chess : Login</title>
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-    <link href="./style.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
-    <script>
-      $('document').ready(function(){
-        document.cookie =  'access_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';;
-        console.log(document.cookie);
-
-        $('.panel-body').collapse('toggle');
-
-        $('.panel-heading').click(function(){
-          $(this).parent().find('.panel-body').collapse("toggle");
-        });
-
-        $('#loginForm').submit(function(e){
-          e.preventDefault();
-          $('#feedback').html('');
-          var loginData = {"username":$('#username').val(),"password":$('#password').val()}
-          $.post(window.location.origin + '/login',loginData,function(data,status){
-            document.cookie = 'access_token='+data;
-            console.log(document.cookie);
-            window.location.href = window.location.origin + "/games.html";
-          });
-          $(document).ajaxError(function(){
-            $('#feedback').html('<div class="alert alert-danger">Username or password was incorrect.</div>')
-          });
-        });
-      });
-    </script>
+    <link href="./css/style.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="media/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="media/favicon-16x16.png" sizes="16x16" />
+    <script src="./js/page_login.js"></script>
   </head>
   <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">

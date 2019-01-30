@@ -15,7 +15,7 @@ body {
 .jumbotron {
   background-color: #d9edf7;
   color: #1E4456;
-  background-image: url("./chessboard.jpg");
+  background-image: url("../media/chessboard.jpg");
   background-size: auto;
   background-repeat: no-repeat;
   background-position: center center;

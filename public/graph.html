@@ -9,105 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Chess : Graph</title>
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-    <link href="./style.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
-    <script>
-      function refreshGraph() {
-        $.get(window.location.origin + '/games',function(data,status){
-          labels = []
-          for (var i = 1; i <= data.length; i++) {
-            labels.push(''+i);
-          }
-
-          var users = $('#userList li').map(function() {return $(this).text();} ).get();
-          var datasets = [];
-          for (var u = 0; u < users.length; u++) {
-            var elo = []
-            for (var i = 0; i < labels.length; i++) {
-              elo.push(1200);
-            }
-            var hasGame = false;
-            for (var i = 1; i < data.length; i++) {
-              if (data[i].white == users[u]) {
-                if (data[i].result === 'white' || data[i].result === 'draw_white') {
-                  elo[i] = elo[i-1] + data[i].elo_change;
-                } else {
-                  elo[i] = elo[i-1] - data[i].elo_change;
-                }
-                hasGame = true;
-              } else if (data[i].black == users[u]) {
-                if (data[i].result === 'black' || data[i].result === 'draw_black') {
-                  elo[i] = elo[i-1] + data[i].elo_change;
-                } else {
-                  elo[i] = elo[i-1] - data[i].elo_change;
-                }
-                hasGame = true;
-              } else {
-                elo[i] = elo[i-1];
-              }
-            }
-            if (hasGame) {
-              var r = Math.floor(Math.random()*256);
-              var g = Math.floor(Math.random()*256);
-              var b = Math.floor(Math.random()*256);
-              var dataset = {'label':users[u],'borderColor':'rgb('+r+','+g+','+b+')','data':elo,'fill':false};
-              datasets.push(dataset);
-            } else {
-              $('li:contains('+users[u]+')').addClass('list-group-item-danger');
-            }
-          }
-          chartData = {'labels':labels,'datasets':datasets};
-          axes = {'yAxes':[{'scaleLabel':{'display':true,'labelString':'ELO'}}],
-                  'xAxes':[{'scaleLabel':{'display':true,'labelString':'Games Played'}}]};
-          var chartInfo = {'type':'line','data':chartData,'options':{'scales':axes}};
-          var canvas = document.getElementById('chart').getContext('2d');
-          var chart = new Chart(canvas,chartInfo);
-        });
-      }
-
-
-      $('document').ready(function(){
-        if (document.cookie !== '') {
-          $.post(window.location.origin + '/token',{'access_token':document.cookie.split('=')[1]},function(data,status){
-            $('#logLink').text('Log Out - ' + data);
-          })
-        }
-
-        $('.panel-body').collapse('toggle');
-
-        $('.panel-heading').click(function(){
-          $(this).parent().find('.panel-body').collapse("toggle");
-        });
-
-        refreshGraph();
-
-        $('#dataForm').submit(function(e){
-          e.preventDefault();
-          $('#dataFeedback').html('');
-          var list = $('#userList').html();
-          var username = $('#dataUser').val();
-          if (username.length === 0) {
-            $('#dataFeedback').html('<div class="alert alert-danger">Please complete username field.</div>');
-          } else if ($('#userList').html().includes(username)) {
-            $('#dataFeedback').html('<div class="alert alert-danger">Please enter a unique username.</div>');
-          } else {
-            list += '<li class="list-group-item">' + username + '</li>';
-            $('#userList').html(list);
-            $('#dataUser').val('');
-            refreshGraph();
-          }
-        });
-
-        $('#dataClr').click(function(){
-          $('#userList').html('');
-          refreshGraph();
-          $('#dataFeedback').html('<div class="alert alert-success">Successfully cleared graph users.</div>');
-        });
-
-
-      });
-    </script>
+    <link href="./css/style.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="media/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="media/favicon-16x16.png" sizes="16x16" />
+    <script src="./js/page_graph.js"></script>
   </head>
   <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -133,11 +38,12 @@
     </nav>
     <div class="jumbotron text-center">
       <h1>Chess Rank</h1>
-      <p>View a visualation of ELO over time.</p>
+      <p>View a visualisation of ELO over time.</p>
     </div>
     <div class="container">
       <div class="row">
         <div class="col-sm-3">
+          <!-- Choose Users To Display -->
           <div class="panel panel-info">
             <div class="panel-heading">
               <span class="panel-title">Select Users</span>
@@ -158,10 +64,11 @@
             </div>
           </div>
         </div>
+        <!-- Display Graph -->
         <div class="col-sm-9">
           <div class="panel panel-info">
             <div class="panel-heading">
-              <span class="panel-title">Graph</span>
+              <span class="panel-title">Visualisation</span>
             </div>
             <div class="panel-body">
               <canvas id="chart"></canvas>

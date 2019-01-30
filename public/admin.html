@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chess : Admin</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="./style.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+    <script>
+      var token = '';
+
+      $('document').ready(function(){
+        console.log(document.cookie);
+        if (document.cookie === '') {
+          window.location.href = window.location.origin + '/login.html';
+        } else {
+          token = document.cookie.split('=')[1];
+          console.log('SET: '+token);
+        }
+
+        $('.panel-body').collapse('toggle');
+
+        $('.panel-heading').click(function(){
+          $(this).parent().find('.panel-body').collapse("toggle");
+        });
+
+        $('#userForm').submit(function(e){
+          e.preventDefault();
+          $('#userFeedback').hide();
+          $('#userFeedback').html('<div class="alert alert-danger">Username invalid - unable to add user.</div>');
+          var username = $('#userUsername').val();
+          var forename = $('#userFname').val();
+          var surname = $('#userSname').val();
+          var password = $('#userPassword').val();
+          if(username === '' || forename === '' || surname === '' || password === '') {
+            $('#userFeedback').html('<div class="alert alert-danger">Please complete all fields.</div>');
+          } else {
+            var toSend = {'username':username,'forename':forename,'surname':surname,'password':password,'access_token':token};
+            $.post(window.location.origin + '/people', toSend, function(data,status) {
+              $('#userUsername').val('');
+              $('#userFname').val('');
+              $('#userSname').val('');
+              $('#userPassword').val('');
+              $('#userFeedback').html('<div class="alert alert-success">Successfully added user.</div>');
+            })
+          }
+          $('#userFeedback').show();
+        })
+
+        $('#gameForm').submit(function(e){
+          e.preventDefault();
+          $('#gameFeedback').hide();
+          var userWhite = $('#gameWhite').val();
+          var userBlack = $('#gameBlack').val();
+          var result = $('input[name="outcome"]:checked').val();
+          $('#gameFeedback').html('<div class="alert alert-danger">Usernames invalid - unable to add game.</div>');
+          if (userWhite === '' || userBlack === '') {
+            $('#gameFeedback').html('<div class="alert alert-danger">Please complete all fields.</div>');
+          } else if (userWhite === userBlack) {
+            $('#gameFeedback').html('<div class="alert alert-danger">Please enter two unique usernames.</div>');
+          } else {
+            var toSend = {'access_token':token,'white':userWhite,'black':userBlack,'result':result};
+            $.post(window.location.origin + '/games', toSend, function(data,status){
+              var userWhite = $('#gameWhite').val('');
+              var userBlack = $('#gameBlack').val('');
+              $('#gameFeedback').html('<div class="alert alert-success">Successfully added game.</div>');
+            })
+          }
+          $('#gameFeedback').show();
+        })
+
+      });
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid blue-navbar">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+            Hey!
+          </button>
+          <a class="navbar-brand" href="./index.html">Chess Rank</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="nav navbar-nav">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./games.html">Games</a></li>
+            <li><a href="./graph.html">Graph</a></li>
+            <li class="active"><a href="./admin.html">Admin</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="./login.html">Log In</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="jumbotron text-center">
+      <h1>Chess Rank</h1>
+      <p>Manually add users and games.</p>
+    </div>
+    <div class="container">
+      <div class="row">
+        <!-- Add User Form -->
+        <div class="col-sm-6">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <span class="panel-title">Add User</span>
+            </div>
+            <div class="panel-body">
+              <form id="userForm">
+                <div class="form-group">
+                  <label for="signUsername">Username:</label>
+                  <input type="text" class="form-control" id="userUsername" />
+                </div>
+                <div class="form-group">
+                  <label for="signFname">First Name:</label>
+                  <input type="text" class="form-control" id="userFname" />
+                </div>
+                <div class="form-group">
+                  <label for="signLname">Last Name:</label>
+                  <input type="text" class="form-control" id="userSname" />
+                </div>
+                <div class="form-group">
+                  <label for="signPassword">Password:</label>
+                  <input type="password" class="form-control" id="userPassword" />
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+                <br><br>
+                <div id="userFeedback"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <span class="panel-title">Add Game</span>
+            </div>
+            <div class="panel-body">
+              <form id="gameForm">
+                <div class="form-group">
+                  <label for="gameWhite">White Username:</label>
+                  <input type="text" class="form-control" id="gameWhite" />
+                </div>
+                <div class="form-group">
+                  <label for="gameBlack">Black Username:</label>
+                  <input type="text" class="form-control" id="gameBlack" />
+                </div>
+                <div class="form-group">
+                  <label>Winner:</label><br>
+                  <label class="radio-inline"><input type="radio" name="outcome" value="white" checked> White</label>
+                  <label class="radio-inline"><input type="radio" name="outcome" value="draw"> Draw</label>
+                  <label class="radio-inline"><input type="radio" name="outcome" value="black"> Black</label><br>
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+              </form>
+              <br>
+              <div id="gameFeedback"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

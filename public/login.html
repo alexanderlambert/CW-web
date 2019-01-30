@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chess : Login</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="./style.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+    <script>
+      $('document').ready(function(){
+        document.cookie =  'access_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';;
+        console.log(document.cookie);
+
+        $('.panel-body').collapse('toggle');
+
+        $('.panel-heading').click(function(){
+          $(this).parent().find('.panel-body').collapse("toggle");
+        });
+
+        $('#loginForm').submit(function(e){
+          e.preventDefault();
+          $('#feedback').html('');
+          var loginData = {"username":$('#username').val(),"password":$('#password').val()}
+          $.post(window.location.origin + '/login',loginData,function(data,status){
+            document.cookie = 'access_token='+data;
+            console.log(document.cookie);
+            window.location.href = window.location.origin + "/games.html";
+          });
+          $(document).ajaxError(function(){
+            $('#feedback').html('<div class="alert alert-danger">Username or password was incorrect.</div>')
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid blue-navbar">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+            Hey!
+          </button>
+          <a class="navbar-brand" href="./index.html">Chess Rank</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="nav navbar-nav">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./games.html">Games</a></li>
+            <li><a href="./graph.html">Graph</a></li>
+            <li><a href="./admin.html">Admin</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="./login.html">Log In</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="jumbotron text-center">
+      <h1>Chess Rank</h1>
+      <p>You need to be signed in to view your games and ranking.</p>
+    </div>
+    <div class="container">
+      <div class="row">
+        <!-- Log In Form -->
+        <div class="col-sm-4 col-sm-offset-4">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <span class="panel-title">Log In</span>
+            </div>
+            <div class="panel-body collapse">
+              <form id="loginForm">
+                <div class="form-group">
+                  <label for="username">Username:</label>
+                  <input type="text" class="form-control" id="username" />
+                </div>
+                <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input type="password" class="form-control" id="password" />
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+              </form>
+              <br>
+              <div id="feedback"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -23,6 +23,15 @@
           console.log('SET: '+token);
         }
 
+        if (token !== '') {
+          $.post(window.location.origin + '/token',{'access_token':token},function(data,status){
+            $('#logLink').text('Log Out - ' + data);
+            if (data !== 'admin') {
+              window.location.href = window.location.origin + '/login.html';
+            }
+          })
+        }
+
         $('.panel-body').collapse('toggle');
 
         $('.panel-heading').click(function(){
@@ -82,7 +91,7 @@
       <div class="container-fluid blue-navbar">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-            Hey!
+            <span class="glyphicon glyphicon-menu-hamburger"></span>
           </button>
           <a class="navbar-brand" href="./index.html">Chess Rank</a>
         </div>
@@ -94,7 +103,7 @@
             <li class="active"><a href="./admin.html">Admin</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="./login.html">Log In</a></li>
+            <li><a id="logLink" href="./login.html">Log In</a></li>
           </ul>
         </div>
       </div>

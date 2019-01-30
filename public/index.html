@@ -132,6 +132,12 @@
       }
 
       $('document').ready(function(){
+        if (document.cookie !== '') {
+          $.post(window.location.origin + '/token',{'access_token':document.cookie.split('=')[1]},function(data,status){
+            $('#logLink').text('Log Out - ' + data);
+          })
+        }
+
         refreshLeaderboard()
         refreshGames();
 
@@ -235,7 +241,7 @@
       <div class="container-fluid blue-navbar">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-            Hey!
+            <span class="glyphicon glyphicon-menu-hamburger"></span>
           </button>
           <a class="navbar-brand" href="./index.html">Chess Rank</a>
         </div>
@@ -247,7 +253,7 @@
             <li><a href="./admin.html">Admin</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="./login.html">Log In</a></li>
+            <li><a id="logLink" href="./login.html">Log In</a></li>
           </ul>
         </div>
       </div>

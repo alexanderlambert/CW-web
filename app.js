@@ -28,9 +28,7 @@ app.get('/people/:username', function(req, resp){
       return;
     }
   }
-  console.log('couldnt find ' + username)
-  resp.status(400);
-  resp.send('400');
+  resp.sendStatus(400);
 })
 
 app.get('/games', function(req, resp){
@@ -91,6 +89,9 @@ app.post('/people',function(req, resp){
 app.post('/games',function(req, resp){
   if (tokens[req.body.access_token] === "admin") {
     if (req.body.white === req.body.black) {
+      resp.sendStatus(400);
+      return;
+    } else if (req.body.white.length === 0 || req.body.black.length === 0 || req.body.result.length === 0) {
       resp.sendStatus(400);
       return;
     }

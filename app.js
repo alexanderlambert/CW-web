@@ -10,7 +10,7 @@ var people = [{"username":"doctorwhocomposer","forename":"Delia", "surname":"Der
 var games = [];
 var pending = [];
 var tokens = {"concertina":"admin"};
-var passwords = {"doctorwhocomposer":"tardis","admin":"123","grandmaster":"kingsknight"};
+var passwords = {"doctorwhocomposer":"tardis","admin":"123","grandmaster":"kingsknight","bishop":"8by8","en_passant":"convention"};
 var nextPending = 1;
 
 app.use(express.static('public'));
@@ -289,7 +289,7 @@ app.post('/record',function(req,resp) {
       }
     }
     if (!found) {
-      resp.send(400);
+      resp.sendStatus(400);
       return;
     }
     var newGame = {'id':nextPending};
